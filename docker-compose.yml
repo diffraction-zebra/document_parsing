@@ -1,0 +1,24 @@
+services:
+  converters:
+    image: rosaltorg-converters
+    build:
+      context: ./converters
+    environment:
+      MODE: "ALL" # "TABLES"
+    ports:
+      - "80:5000"
+    depends_on:
+      ocr:
+        condition: service_started
+
+  ocr:
+    image: rosaltorg-ocr
+    build:
+      context: ./ocr
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
